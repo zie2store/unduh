@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video Downloader</title>
+    <style>
+      body { font-family: Arial; max-width: 400px; margin: 40px auto; }
+      input, button { width: 100%; padding: 10px; margin-top: 10px; }
+    </style>
+  </head>
+  <body>
+    <h2>Multi-Site Video Downloader</h2>
+
+    <input type="text" id="url" placeholder="Paste URL: YouTube, TikTok, IG, FB..." />
+
+    <button onclick="startDownload()">Download</button>
+
+    <script>
+      function startDownload() {
+        const url = document.getElementById("url").value;
+        if (!url) return alert("Please enter a URL");
+
+        window.location = "/api/download?url=" + encodeURIComponent(url);
+      }
+    </script>
+  </body>
+</html>
