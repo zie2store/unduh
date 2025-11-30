@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/download.js": {
-      "runtime": "nodejs20.x",
+      "runtime": "nodejs20",
       "maxDuration": 30,
       "memory": 512,
       "includeFiles": "api/bin/yt-dlp"
