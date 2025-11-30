@@ -1,34 +1,36 @@
-import { spawn } from "child_process";
-import path from "path";
+const { spawn } = require("child_process");
+const path = require("path");
 
-export default function handler(req, res) {
+module.exports = (req, res) => {
   const url = req.query.url;
 
   if (!url) {
     return res.status(400).send("Missing ?url parameter");
   }
 
-  const binaryPath = path.join(process.cwd(), "api/bin/yt-dlp");
+  // Correct binary path for Vercel Serverless
+  const binaryPath = path.join(__dirname, "bin/yt-dlp");
 
-  const process = spawn(binaryPath, [
+  // Spawn yt-dlp and stream output
+  const child = spawn(binaryPath, [
     url,
     "-o", "-",
     "-f", "bestvideo+bestaudio/best"
   ]);
 
-  // Headers for download
+  // Set downloadable headers
   res.setHeader("Content-Type", "video/mp4");
   res.setHeader("Content-Disposition", "attachment; filename=video.mp4");
 
-  // Send video stream to client
-  process.stdout.pipe(res);
+  // Stream video back to client
+  child.stdout.pipe(res);
 
-  // Log stderr (important for debugging)
-  process.stderr.on("data", (data) => {
+  // Log errors
+  child.stderr.on("data", (data) => {
     console.error("yt-dlp:", data.toString());
   });
 
-  process.on("close", (code) => {
+  child.on("close", (code) => {
     console.log("yt-dlp exited with code", code);
   });
-}
+};
